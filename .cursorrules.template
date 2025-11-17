@@ -1,0 +1,326 @@
+# .cursorrules Template
+# Copy this file to your project root as `.cursorrules` and customize the sections marked with [CUSTOMIZE]
+
+## 📋 Project Overview
+[CUSTOMIZE] Project Name: [Your Project Name]
+[CUSTOMIZE] Description: [Brief description of what this project does]
+[CUSTOMIZE] Tech Stack: [e.g., Python, TypeScript, React, Django, etc.]
+[CUSTOMIZE] Version: [Current version]
+
+## 🎯 AI Assistant Behavior
+
+### Core Principles
+1. **Evidence-Based Responses**: Never guess. Verify with official documentation before suggesting implementations.
+2. **Ask Before Acting**: When requirements are ambiguous, ask clarifying questions instead of making assumptions.
+3. **Code Quality First**: Prioritize maintainable, tested, and well-documented code over quick fixes.
+4. **Security Awareness**: Always consider security implications (injection attacks, auth issues, data validation).
+
+### Communication Style
+- Be concise and direct
+- Use code examples when explaining concepts
+- Provide file paths in format `file_path:line_number` for easy navigation
+- Avoid speculation - state confidence level when uncertain
+
+## 🔧 Development Environment
+
+### [CUSTOMIZE] Package Manager
+Primary: [e.g., npm, pnpm, yarn, pip, uv, poetry, etc.]
+
+**Critical Rules**:
+[CUSTOMIZE - Add any package manager specific rules]
+Example:
+- Always use `uv run` for Python commands (never `python -m` or `pip install` directly)
+- Use `pnpm install` not `npm install`
+
+### [CUSTOMIZE] Build & Test Commands
+```bash
+# Install dependencies
+[CUSTOMIZE: e.g., npm install, uv pip install -e ., poetry install]
+
+# Run tests
+[CUSTOMIZE: e.g., npm test, uv run pytest, cargo test]
+
+# Build
+[CUSTOMIZE: e.g., npm run build, make build, cargo build]
+
+# Lint & Format
+[CUSTOMIZE: e.g., npm run lint, uv run ruff check, cargo clippy]
+
+# Development server
+[CUSTOMIZE: e.g., npm run dev, python manage.py runserver]
+```
+
+## 📂 Project Structure
+[CUSTOMIZE - Add your project structure]
+
+Example:
+```
+src/                 # Source code
+├── components/      # React components / Python modules
+├── utils/          # Utility functions
+└── tests/          # Test files
+
+docs/               # Documentation
+config/             # Configuration files
+scripts/            # Build/deployment scripts
+```
+
+## 🎨 Code Style & Conventions
+
+### [CUSTOMIZE] Naming Conventions
+[CUSTOMIZE based on your language/framework]
+
+Examples:
+- **Files**: `snake_case.py`, `kebab-case.tsx`, `PascalCase.java`
+- **Functions**: `camelCase` (JS/TS), `snake_case` (Python)
+- **Classes**: `PascalCase` (all languages)
+- **Constants**: `UPPER_SNAKE_CASE`
+- **Private**: `_leading_underscore` (Python), `#private` (JS)
+
+### [CUSTOMIZE] Import Organization
+[CUSTOMIZE based on your language]
+
+Example for Python:
+```python
+# Standard library
+import os
+import sys
+
+# Third-party
+import pytest
+import click
+
+# Local
+from .utils import helper
+```
+
+Example for TypeScript:
+```typescript
+// React/framework
+import React from 'react'
+
+// Third-party
+import { z } from 'zod'
+
+// Local
+import { helper } from '@/utils'
+```
+
+### [CUSTOMIZE] Code Formatting
+[CUSTOMIZE]
+- Line length: [e.g., 88 chars (Black), 100 chars, 120 chars]
+- Indentation: [e.g., 2 spaces, 4 spaces, tabs]
+- Quotes: [e.g., single, double]
+- Formatter: [e.g., Prettier, Black, rustfmt]
+
+## 🧪 Testing Standards
+
+### Test Organization
+[CUSTOMIZE]
+- Unit tests: [location, e.g., `tests/unit/`]
+- Integration tests: [location, e.g., `tests/integration/`]
+- E2E tests: [location, e.g., `tests/e2e/`]
+
+### Test Requirements
+[CUSTOMIZE]
+- All new features must include tests
+- Minimum coverage: [e.g., 80%]
+- Test file naming: [e.g., `test_*.py`, `*.test.ts`]
+
+### Example Test Pattern
+[CUSTOMIZE - Add language-specific example]
+
+```python
+# Python example
+def test_feature_name():
+    """Clear description of what is being tested"""
+    # Arrange
+    setup_data = {...}
+
+    # Act
+    result = function_under_test(setup_data)
+
+    # Assert
+    assert result == expected_value
+```
+
+## 🔒 Security Guidelines
+
+### Always Check For:
+- Input validation and sanitization
+- SQL injection vulnerabilities
+- XSS (Cross-Site Scripting) risks
+- CSRF token usage
+- Authentication and authorization
+- Sensitive data exposure (API keys, passwords)
+- Dependency vulnerabilities
+
+### [CUSTOMIZE] Secrets Management
+[CUSTOMIZE]
+- Never commit: `.env`, `secrets.json`, etc.
+- Use: [e.g., environment variables, AWS Secrets Manager, Vault]
+
+## 🌿 Git Workflow
+
+### [CUSTOMIZE] Branch Naming
+[CUSTOMIZE your branching strategy]
+
+Examples:
+- Features: `feature/description` or `feat/description`
+- Bug fixes: `fix/description` or `bugfix/description`
+- Documentation: `docs/description`
+- Refactoring: `refactor/description`
+
+### [CUSTOMIZE] Commit Convention
+[CUSTOMIZE - Common options: Conventional Commits, Angular, etc.]
+
+Example (Conventional Commits):
+```
+type(scope): subject
+
+types: feat, fix, docs, style, refactor, test, chore
+examples:
+- feat(auth): add JWT authentication
+- fix(api): handle null response in user endpoint
+- docs: update installation instructions
+```
+
+### [CUSTOMIZE] PR/MR Guidelines
+[CUSTOMIZE]
+- Required reviewers: [number]
+- Must pass CI/CD: [yes/no]
+- Branch protection: [enabled on main/master]
+
+## 🚀 Deployment
+
+### [CUSTOMIZE] Environments
+[CUSTOMIZE]
+- Development: [URL/process]
+- Staging: [URL/process]
+- Production: [URL/process]
+
+### [CUSTOMIZE] Deployment Process
+[CUSTOMIZE]
+```bash
+# Example deployment commands
+[CUSTOMIZE: e.g., npm run deploy, ./deploy.sh, kubectl apply]
+```
+
+## 📚 Key Documentation Files
+
+[CUSTOMIZE - List important docs in your project]
+
+Examples:
+- `README.md` - Project overview and quick start
+- `CONTRIBUTING.md` - Contribution guidelines
+- `ARCHITECTURE.md` - System design and architecture
+- `API.md` - API documentation
+- `CHANGELOG.md` - Version history
+
+## 🔌 [CUSTOMIZE] Framework-Specific Rules
+
+### [CUSTOMIZE - Add framework-specific guidance]
+
+Example for React:
+- Use functional components with hooks
+- Prefer named exports over default exports
+- Keep components under 200 lines
+- Use TypeScript for all new code
+
+Example for Django:
+- Follow Django best practices
+- Use class-based views
+- Keep business logic in models
+- Use Django ORM, avoid raw SQL
+
+Example for FastAPI:
+- Use Pydantic models for validation
+- Document all endpoints with docstrings
+- Use dependency injection
+- Follow RESTful conventions
+
+## 🛠️ [CUSTOMIZE] Available Tools & Integrations
+
+[CUSTOMIZE - List tools your project uses]
+
+Examples:
+- CI/CD: [e.g., GitHub Actions, GitLab CI, Jenkins]
+- Monitoring: [e.g., Sentry, DataDog, New Relic]
+- Documentation: [e.g., Sphinx, JSDoc, Storybook]
+- Code Quality: [e.g., SonarQube, CodeClimate]
+
+## ⚡ Performance Considerations
+
+[CUSTOMIZE]
+- Database query optimization guidelines
+- Caching strategy
+- Bundle size limits
+- Load time targets
+
+## 🐛 Debugging & Troubleshooting
+
+### [CUSTOMIZE] Common Issues
+[CUSTOMIZE - Add project-specific common issues and solutions]
+
+Example:
+1. **Issue**: Tests fail with "Module not found"
+   **Solution**: Run `[package manager install command]`
+
+2. **Issue**: Build errors with TypeScript
+   **Solution**: Check `tsconfig.json` and run `npm run type-check`
+
+### [CUSTOMIZE] Debug Commands
+```bash
+[CUSTOMIZE: e.g., npm run debug, python -m pdb, etc.]
+```
+
+## 📖 Learning Resources
+
+[CUSTOMIZE - Add relevant documentation links]
+
+Examples:
+- Official docs: [URL]
+- Internal wiki: [URL]
+- Style guide: [URL]
+- Architecture diagrams: [URL]
+
+## ✅ Pre-Implementation Checklist
+
+Before implementing any feature, verify:
+- [ ] I understand the requirements clearly
+- [ ] I've checked official documentation
+- [ ] I know where this code belongs in the project structure
+- [ ] I've considered security implications
+- [ ] I know what tests are needed
+- [ ] I've checked for similar existing implementations
+- [ ] I understand the performance impact
+
+## 🎯 When Uncertain
+
+If you're unsure about:
+1. **Requirements**: Ask the user for clarification
+2. **Implementation**: Suggest 2-3 approaches with tradeoffs
+3. **Best practices**: Reference official documentation
+4. **Architecture**: Check existing patterns in the codebase
+
+---
+
+## 📝 Template Customization Notes
+
+**How to use this template:**
+1. Copy this file to your project root as `.cursorrules`
+2. Search for `[CUSTOMIZE]` markers
+3. Replace placeholder content with your project-specific information
+4. Remove this section and the `[CUSTOMIZE]` markers when done
+5. Keep the file updated as your project evolves
+
+**Sections to prioritize:**
+- Package Manager & Commands (critical for day-to-day work)
+- Project Structure (helps AI navigate your codebase)
+- Code Style & Conventions (ensures consistency)
+- Testing Standards (maintains code quality)
+
+**Optional sections:**
+- Remove sections that don't apply to your project
+- Add new sections for project-specific needs
+- Keep it concise - too many rules can be overwhelming

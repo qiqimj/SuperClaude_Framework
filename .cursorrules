@@ -1,0 +1,455 @@
+# .cursorrules - SuperClaude Framework
+
+## 📋 Project Overview
+Project Name: SuperClaude Framework
+Description: Production-grade pytest plugin and CLI framework featuring PM Agent patterns (ConfidenceChecker, SelfCheck, Reflexion) for AI-assisted development
+Tech Stack: Python 3.10+, Pytest, Click, Rich, UV package manager
+Version: 4.1.9
+
+## 🎯 AI Assistant Behavior
+
+### Core Principles
+1. **Evidence-Based Development**: Never guess - verify with official docs (Context7 MCP, WebFetch, WebSearch) before implementation
+2. **Confidence-First Implementation**: Check confidence BEFORE starting (≥90% proceed, 70-89% present alternatives, <70% ask questions)
+3. **Parallel-First Execution**: Use Wave → Checkpoint → Wave pattern (3.5x faster)
+4. **Token Efficiency**: Simple (200 tokens), Medium (1000 tokens), Complex (2500 tokens)
+
+### Communication Style
+- Be concise and direct
+- Use code examples when explaining
+- Provide file paths in format `file_path:line_number`
+- State confidence level when uncertain
+
+## 🔧 Development Environment
+
+### Package Manager
+Primary: **UV** (Critical: Never use `python -m`, `pip install`, or `python script.py` directly)
+
+**Critical Rules**:
+- ✅ Always use `uv run` for Python execution
+- ✅ Use `uv pip install` for package installation
+- ❌ NEVER use `python -m` or bare `python` commands
+- ❌ NEVER use `pip install` directly
+
+### Build & Test Commands
+```bash
+# Setup
+make dev              # Install in editable mode with dev dependencies
+make verify           # Verify installation (package, plugin, health)
+
+# Testing
+make test             # Run full test suite
+uv run pytest tests/pm_agent/ -v              # Run specific directory
+uv run pytest tests/test_file.py -v           # Run specific file
+uv run pytest -m confidence_check             # Run by marker
+uv run pytest --cov=superclaude               # With coverage
+
+# Code Quality
+make lint             # Run ruff linter
+make format           # Format code with ruff
+make doctor           # Health check diagnostics
+
+# Plugin Packaging (planned for v5.0)
+make build-plugin            # Build plugin artefacts into dist/
+make sync-plugin-repo        # Sync artefacts into ../SuperClaude_Plugin
+
+# Maintenance
+make clean            # Remove build artifacts
+```
+
+## 📂 Project Structure
+
+```
+# Claude Code Configuration (v4.1.9)
+.claude/
+├── settings.json        # User settings
+└── commands/            # Slash commands (installed via `superclaude install`)
+    ├── pm.md
+    ├── research.md
+    └── index-repo.md
+
+# Python Package
+src/superclaude/         # Pytest plugin + CLI tools
+├── pytest_plugin.py     # Auto-loaded pytest integration
+├── pm_agent/            # confidence.py, self_check.py, reflexion.py
+├── execution/           # parallel.py, reflection.py, self_correction.py
+└── cli/                 # main.py, doctor.py, install_skill.py
+
+# Plugin Development (planned for v5.0 - NOT ACTIVE in 4.1.9)
+plugins/superclaude/     # Future plugin source
+├── agents/              # Agent definitions
+├── commands/            # Command definitions
+├── hooks/               # Hook configurations
+├── scripts/             # Shell scripts
+└── skills/              # Skill implementations
+
+# Project Files
+tests/                   # Python test suite (pytest)
+docs/                    # Documentation
+scripts/                 # Analysis tools (workflow metrics, A/B testing)
+PLANNING.md              # Architecture, absolute rules
+TASK.md                  # Current tasks
+KNOWLEDGE.md             # Accumulated insights
+CLAUDE.md                # Claude Code guidance (YOU ARE READING THIS FOR CURSOR)
+```
+
+## 🎨 Code Style & Conventions
+
+### Naming Conventions
+- **Files**: `snake_case.py`
+- **Functions**: `snake_case()`
+- **Classes**: `PascalCase`
+- **Constants**: `UPPER_SNAKE_CASE`
+- **Private**: `_leading_underscore`
+- **Pytest fixtures**: `snake_case` (e.g., `confidence_checker`, `pm_context`)
+
+### Import Organization
+```python
+# Standard library
+import os
+from typing import List, Dict
+
+# Third-party
+import pytest
+import click
+from rich.console import Console
+
+# Local
+from superclaude.pm_agent.confidence import ConfidenceChecker
+from superclaude.utils import helper
+```
+
+### Code Formatting
+- Line length: 88 chars (Black default)
+- Indentation: 4 spaces
+- Quotes: Double quotes
+- Formatter: Ruff (replaces Black + isort + flake8)
+
+### Docstrings
+Use Google-style docstrings:
+```python
+def assess_confidence(context: dict) -> float:
+    """Assess implementation confidence before execution.
+
+    Args:
+        context: Dictionary with test_name, has_official_docs, etc.
+
+    Returns:
+        Confidence score (0.0-1.0)
+
+    Raises:
+        ValueError: If context is missing required keys
+    """
+```
+
+## 🧪 Testing Standards
+
+### Test Organization
+- Unit tests: `tests/unit/` (auto-marked with `@pytest.mark.unit`)
+- Integration tests: `tests/integration/` (auto-marked with `@pytest.mark.integration`)
+- PM Agent tests: `tests/pm_agent/`
+
+### Test Requirements
+- All new features must include tests
+- Minimum coverage target: 80%
+- Test file naming: `test_*.py`
+
+### PM Agent Test Markers
+```python
+@pytest.mark.confidence_check  # Pre-execution confidence assessment
+@pytest.mark.self_check        # Post-implementation validation
+@pytest.mark.reflexion         # Error learning pattern
+@pytest.mark.complexity("medium")  # Token budget: simple(200), medium(1000), complex(2500)
+```
+
+### Example Test Pattern
+```python
+@pytest.mark.confidence_check
+def test_feature(confidence_checker):
+    """Pre-execution confidence check - skips if < 70%"""
+    context = {"test_name": "test_feature", "has_official_docs": True}
+    assert confidence_checker.assess(context) >= 0.7
+
+@pytest.mark.self_check
+def test_implementation(self_check_protocol):
+    """Post-implementation validation with evidence"""
+    implementation = {"code": "...", "tests": [...]}
+    passed, issues = self_check_protocol.validate(implementation)
+    assert passed, f"Validation failed: {issues}"
+```
+
+### Fixtures Available
+- `confidence_checker`: ConfidenceChecker instance
+- `self_check_protocol`: SelfCheckProtocol instance
+- `reflexion_pattern`: ReflexionPattern instance
+- `token_budget`: TokenBudget with complexity allocation
+- `pm_context`: Project management context
+
+## 🔒 Security Guidelines
+
+### Always Check For:
+- Input validation in CLI commands
+- Path traversal vulnerabilities
+- Arbitrary code execution risks
+- Dependency vulnerabilities (use `pip-audit`)
+
+### Secrets Management
+- Never commit: `.env`, `credentials.json`
+- Use environment variables for sensitive config
+
+## 🌿 Git Workflow
+
+### Branch Structure
+`master` (production) ← `integration` (testing) ← `feature/*`, `fix/*`, `docs/*`
+
+### Branch Naming
+- Features: `feature/pm-agent-improvements`
+- Bug fixes: `fix/pytest-plugin-detection`
+- Documentation: `docs/api-reference`
+- Refactoring: `refactor/execution-parallel`
+
+### Commit Convention (Conventional Commits)
+```
+type(scope): subject
+
+Types: feat, fix, docs, style, refactor, test, chore
+
+Examples:
+feat(pm-agent): add confidence threshold configuration
+fix(pytest-plugin): resolve marker auto-detection issue
+docs: update installation guide for UV
+test(execution): add parallel execution benchmarks
+```
+
+### Git Worktrees (Parallel Development)
+**CRITICAL**: When running multiple Claude Code sessions in parallel, use `git worktree`:
+
+```bash
+# Create worktree for integration branch
+cd ~/github/SuperClaude_Framework
+git worktree add ../SuperClaude_Framework-integration integration
+
+# Create worktree for feature branch
+git worktree add ../SuperClaude_Framework-feature feature/pm-agent
+
+# Cleanup when done
+git worktree remove ../SuperClaude_Framework-integration
+```
+
+**Benefits**: No branch switching conflicts, independent working directories
+
+## 🚀 Deployment
+
+### Environments
+- Development: Local with `make dev`
+- Testing: `integration` branch
+- Production: `master` branch → PyPI release
+
+### Release Process
+```bash
+# 1. Update version in pyproject.toml
+# 2. Update CHANGELOG.md
+# 3. Commit: git commit -m "chore: bump version to X.Y.Z"
+# 4. Tag: git tag vX.Y.Z
+# 5. Push: git push && git push --tags
+# 6. Build: make clean && make build
+# 7. Publish: twine upload dist/*
+```
+
+## 📚 Key Documentation Files
+
+**Must-read for context**:
+- `PLANNING.md` - Architecture, design principles, absolute rules
+- `TASK.md` - Current tasks and priorities
+- `KNOWLEDGE.md` - Accumulated insights and troubleshooting
+- `CLAUDE.md` - Original Claude Code guidance (basis for this file)
+
+**Additional docs**:
+- `docs/user-guide/` - End-user documentation
+- `docs/developer-guide/` - Contributor documentation
+- `docs/reference/` - API reference
+- `README.md` - Quick start
+
+## 🔌 Framework-Specific Rules
+
+### Pytest Plugin Development
+- Entry point registered in `pyproject.toml`:
+  ```toml
+  [project.entry-points.pytest11]
+  superclaude = "superclaude.pytest_plugin"
+  ```
+- Auto-loaded after installation (no `-p` flag needed)
+- Use `pytest_configure`, `pytest_collection_modifyitems` hooks
+- Fixtures must use `@pytest.fixture` decorator
+
+### CLI Development (Click)
+- Use Click for all CLI commands
+- Rich for output formatting
+- Group related commands
+- Add `--help` text to all commands/options
+
+### PM Agent Patterns
+**ConfidenceChecker** (src/superclaude/pm_agent/confidence.py):
+- Pre-execution confidence: ≥90% proceed, 70-89% alternatives, <70% ask
+- ROI: 25-250x token savings
+
+**SelfCheckProtocol** (src/superclaude/pm_agent/self_check.py):
+- Post-implementation evidence-based validation
+- No speculation - verify with tests/docs
+
+**ReflexionPattern** (src/superclaude/pm_agent/reflexion.py):
+- Error learning and prevention
+- Cross-session pattern matching
+
+## 🛠️ Available Tools & Integrations
+
+### MCP Servers (via airis-mcp-gateway)
+**High Priority**:
+- **Tavily**: Web search (Deep Research)
+- **Context7**: Official documentation (prevent hallucination)
+- **Sequential**: Token-efficient reasoning (30-50% reduction)
+- **Serena**: Session persistence
+- **Mindbase**: Cross-session learning
+
+**Optional**: Playwright, Magic, Chrome DevTools
+
+**Usage**: Always prefer MCP tools over speculation for docs/research
+
+### Development Tools
+- CI/CD: GitHub Actions
+- Code Quality: Ruff (linter + formatter)
+- Type Checking: mypy (planned)
+- Documentation: Sphinx (planned)
+- Package Build: Hatchling (PEP 517)
+
+## ⚡ Performance Considerations
+
+### Parallel Execution Pattern
+Use **Wave → Checkpoint → Wave** (3.5x faster):
+```python
+# Wave 1: Parallel reads
+results = [Read(file) for file in files]
+
+# Checkpoint: Sequential analysis
+analysis = analyze(results)
+
+# Wave 2: Parallel edits
+[Edit(file, changes) for file, changes in analysis.items()]
+```
+
+### Token Budget Allocation
+- Simple tasks (typo fix): 200 tokens
+- Medium tasks (bug fix): 1,000 tokens
+- Complex tasks (new feature): 2,500 tokens
+- Confidence check ROI: spend 100-200 to save 5,000-50,000
+
+## 🐛 Debugging & Troubleshooting
+
+### Common Issues
+
+1. **Issue**: Pytest plugin not loading
+   **Solution**:
+   ```bash
+   # Verify installation
+   make verify
+
+   # Check plugin is registered
+   uv run pytest --version
+   # Should show: plugins: superclaude-X.Y.Z
+   ```
+
+2. **Issue**: UV command not found
+   **Solution**:
+   ```bash
+   # Install UV
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+
+   # Verify
+   uv --version
+   ```
+
+3. **Issue**: Import errors in tests
+   **Solution**:
+   ```bash
+   # Reinstall in editable mode
+   make dev
+   ```
+
+### Debug Commands
+```bash
+# Verbose pytest output
+uv run pytest -vv
+
+# Show fixture setup
+uv run pytest --setup-show
+
+# Debug specific test
+uv run pytest tests/test_file.py::test_name -vv -s
+
+# Check installed packages
+uv pip list
+```
+
+## 📖 Learning Resources
+
+- Official Pytest docs: https://docs.pytest.org/
+- Click docs: https://click.palletsprojects.com/
+- Ruff docs: https://docs.astral.sh/ruff/
+- UV docs: https://docs.astral.sh/uv/
+- Internal wiki: See `docs/` directory
+
+## ✅ Pre-Implementation Checklist
+
+Before implementing any feature, verify:
+- [ ] Confidence ≥90% (use ConfidenceChecker if uncertain)
+- [ ] Checked official docs (Pytest, Click, etc.)
+- [ ] Understood project structure (see PLANNING.md)
+- [ ] Considered security implications
+- [ ] Planned tests (unit + integration)
+- [ ] Checked for similar existing implementations
+- [ ] Using UV for all Python commands
+
+## 🎯 When Uncertain
+
+**Confidence < 70%**: Ask clarifying questions
+**Confidence 70-89%**: Present 2-3 approaches with tradeoffs
+**Confidence ≥90%**: Proceed with implementation
+
+**For technical questions**:
+1. Check official docs (via Context7 MCP if available)
+2. Search existing codebase
+3. Review PLANNING.md and KNOWLEDGE.md
+4. Ask user for clarification
+
+## ⚠️ Important Version Notes
+
+**Current version: 4.1.9**
+
+**What EXISTS in 4.1.9**:
+- ✅ Python package with pytest plugin
+- ✅ CLI tools (`superclaude` command)
+- ✅ PM Agent patterns (Confidence, SelfCheck, Reflexion)
+- ✅ Slash commands (installed to `~/.claude/commands/`)
+
+**What DOES NOT EXIST in 4.1.9** (planned for v5.0):
+- ❌ `.claude-plugin/` directory auto-detection
+- ❌ TypeScript plugin system
+- ❌ Plugin marketplace commands
+- ❌ `make build-plugin` functionality
+
+See [issue #419](https://github.com/SuperClaude-Org/SuperClaude_Framework/issues/419) and `docs/plugin-reorg.md` for v5.0 plans.
+
+## 🚨 Absolute Rules
+
+1. **NEVER** use `python -m` or bare `python` - always `uv run python`
+2. **NEVER** use `pip install` - always `uv pip install`
+3. **NEVER** guess implementation details - verify with docs
+4. **ALWAYS** check confidence before starting work
+5. **ALWAYS** use parallel execution when possible
+6. **ALWAYS** write tests for new features
+7. **ALWAYS** follow Conventional Commits format
+8. **ALWAYS** use Ruff for linting and formatting
+
+---
+
+*This file guides Cursor AI to work effectively with SuperClaude Framework. Keep it updated as the project evolves.*
